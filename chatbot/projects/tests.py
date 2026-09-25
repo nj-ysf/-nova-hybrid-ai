@@ -42,6 +42,18 @@ class TestAccessSeedTests(TestCase):
         self.assertEqual(Quota.objects.filter(project=self.project).count(), 3)
         self.assertNotIn("local-test-password-123", output)
 
+    def test_demo_seed_is_idempotent_with_group_quotas(self):
+        tenant = Tenant.objects.create(name="Demo organization", slug="demo")
+        project = Project.objects.create(tenant=tenant, name="Demo project", slug="demo")
+        with patch.dict(os.environ, {"DJANGO_TEST_USER_PASSWORD": "local-test-password-123"}):
+            call_command("seed_test_access", project_id=project.pk, stdout=StringIO())
+
+        call_command("seed_demo", username="test-admin", stdout=StringIO())
+        call_command("seed_demo", username="test-admin", stdout=StringIO())
+
+        project_quotas = Quota.objects.filter(project=project, user=None, group=None, provider=None)
+        self.assertEqual(project_quotas.count(), 1)
+
     def test_admin_manages_users_access_and_shows_quota_usage(self):
         self.seed()
         platform_admin = get_user_model().objects.get(username="test-admin")

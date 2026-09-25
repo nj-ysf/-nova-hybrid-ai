@@ -100,6 +100,12 @@ class LangChainChatProvider(LLMProvider):
 class OllamaProvider(LangChainChatProvider):
     output_option = "num_predict"
 
+    def _bound_model(self, max_tokens):
+        # ChatOllama exposes generation options as model fields. Passing
+        # num_predict through bind() forwards it to Client.chat(), where the
+        # current Ollama SDK rejects it as an unexpected keyword argument.
+        return self._chat_model.model_copy(update={self.output_option: max_tokens})
+
     def build_model(self, model, connection):
         url = urlsplit(connection["url"])
         if (

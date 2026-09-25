@@ -303,7 +303,9 @@ class SecurityTests(TestCase):
 
     def test_group_quota_applies_only_to_group_members(self):
         limited = ProjectGroup.objects.create(project=self.project, name="Limited")
+        other = ProjectGroup.objects.create(project=self.project, name="Other limit")
         Quota.objects.create(project=self.project, group=limited, requests_per_day=0)
+        Quota.objects.create(project=self.project, group=other, requests_per_day=100)
         with self.fake_generation():
             self.assertEqual(self.chat().status_code, 200)
 

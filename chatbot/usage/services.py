@@ -55,7 +55,7 @@ def applicable_limits(project_id, user_id, group_ids):
 def reserve(membership, budget, conversation=None):
     # One stable project row serializes reservations even before a quota row exists.
     Project.objects.select_for_update().get(pk=membership.project_id)
-    Quota.objects.get_or_create(project=membership.project, user=None, provider=None)
+    Quota.objects.get_or_create(project=membership.project, user=None, group=None, provider=None)
     group_ids = list(membership.groups.values_list("pk", flat=True))
     quotas = applicable_limits(membership.project_id, membership.user_id, group_ids)
     records = UsageRecord.objects.filter(project=membership.project)

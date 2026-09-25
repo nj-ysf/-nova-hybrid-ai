@@ -33,7 +33,7 @@ class LangChainProviderTests(SimpleTestCase):
 
     def test_ollama_generate_maps_messages_limit_and_usage(self):
         chat_model = Mock()
-        bound = chat_model.bind.return_value
+        bound = chat_model.model_copy.return_value
         bound.invoke.return_value = AIMessage(
             content="hello", usage_metadata={"input_tokens": 2, "output_tokens": 1, "total_tokens": 3}
         )
@@ -50,7 +50,7 @@ class LangChainProviderTests(SimpleTestCase):
             validate_model_on_init=False,
             client_kwargs={"timeout": 60, "trust_env": False},
         )
-        chat_model.bind.assert_called_once_with(num_predict=10)
+        chat_model.model_copy.assert_called_once_with(update={"num_predict": 10})
         sent = bound.invoke.call_args.args[0]
         self.assertIsInstance(sent[0], SystemMessage)
         self.assertIsInstance(sent[1], HumanMessage)
@@ -68,7 +68,7 @@ class LangChainProviderTests(SimpleTestCase):
 
     def test_stream_yields_langchain_chunks(self):
         chat_model = Mock()
-        chat_model.bind.return_value.stream.return_value = [
+        chat_model.model_copy.return_value.stream.return_value = [
             AIMessageChunk(content="hel"),
             AIMessageChunk(content="lo"),
         ]

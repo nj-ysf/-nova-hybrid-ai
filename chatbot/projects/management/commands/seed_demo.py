@@ -47,7 +47,7 @@ class Command(BaseCommand):
         base, _ = KnowledgeBase.objects.get_or_create(
             project=project, name="Project handbook", defaults={"policy": policy}
         )
-        Quota.objects.get_or_create(project=project, user=None, provider=None)
+        Quota.objects.get_or_create(project=project, user=None, group=None, provider=None)
         self.stdout.write(
             self.style.SUCCESS(
                 f"Demo ready: project_id={project.pk}, knowledge_base_id={base.pk}, policy_id={policy.pk}"
