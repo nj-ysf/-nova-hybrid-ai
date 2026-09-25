@@ -1,0 +1,32 @@
+name: Security and database tests
+on: [push, pull_request]
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_DB: chatbot_integration
+          POSTGRES_USER: chatbot
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U chatbot -d chatbot_integration"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: pip install -r requirements-dev.txt
+      - run: ruff check chatbot
+      - run: pytest -q
+      - run: python chatbot/manage.py makemigrations --check --dry-run --settings=chatbot.test_settings
+      - run: pytest -q
+        env:
+          TEST_POSTGRES: 'true'
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: '5432'
+          POSTGRES_DB: chatbot_integration
+          POSTGRES_USER: chatbot

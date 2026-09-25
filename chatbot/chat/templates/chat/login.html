@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in · Nova</title>
+    <link rel="stylesheet" href="{% static 'chat/chat.css' %}">
+</head>
+<body>
+    <main class="chat-shell">
+        <section class="login-card">
+            <div class="avatar avatar-ai" aria-hidden="true">N</div>
+            <h1>Welcome to Nova</h1>
+            <p>Sign in to your project workspace.</p>
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                {% if form.errors %}<p role="alert">Sign-in failed. Check your username and password.</p>{% endif %}
+                <label for="id_username">Username</label>
+                <input id="id_username" name="username" autocomplete="username" required autofocus>
+                <label for="id_password">Password</label>
+                <input id="id_password" name="password" type="password" autocomplete="current-password" required>
+                <input type="hidden" name="next" value="{{ next }}">
+                <button type="submit">Sign in</button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>
