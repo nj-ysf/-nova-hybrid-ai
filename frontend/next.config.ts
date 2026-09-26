@@ -16,6 +16,10 @@ const nextConfig: NextConfig = {
         destination: `${djangoApiUrl.replace(/\/$/, "")}/static/:path*`,
       },
       {
+        source: "/csrf/",
+        destination: `${djangoApiUrl.replace(/\/$/, "")}/csrf/`,
+      },
+      {
         source: "/api/:path*/",
         destination: `${djangoApiUrl.replace(/\/$/, "")}/api/:path*/`,
       },

@@ -61,18 +61,27 @@ export function NovaChat() {
     let cancelled = false;
 
     async function initialize() {
-      try {
-        const availableProjects = await listAll<Project>("/api/projects/?limit=100");
-        if (cancelled) return;
-        setProjects(availableProjects);
-        if (!availableProjects.length) {
-          setStatus("No projects are assigned to this account.");
+      for (let attempt = 0; attempt < 3; attempt += 1) {
+        try {
+          const availableProjects = await listAll<Project>("/api/projects/?limit=100");
+          if (cancelled) return;
+          setProjects(availableProjects);
+          if (!availableProjects.length) {
+            setStatus("No projects are assigned to this account.");
+            return;
+          }
+          setProjectId(String(availableProjects[0].id));
+          setStatus("Choose a conversation or start a new chat.");
           return;
+        } catch (error) {
+          if (cancelled) return;
+          if (attempt === 2) {
+            setStatus(error instanceof Error ? error.message : "Could not load projects.");
+            return;
+          }
+          setStatus("Connecting to your projects…");
+          await new Promise((resolve) => window.setTimeout(resolve, 800 * (attempt + 1)));
         }
-        setProjectId(String(availableProjects[0].id));
-        setStatus("Choose a conversation or start a new chat.");
-      } catch (error) {
-        if (!cancelled) setStatus(error instanceof Error ? error.message : "Could not load projects.");
       }
     }
 
@@ -291,7 +300,7 @@ export function NovaChat() {
 
         <div className="shrink-0 border-t border-white/[.07] bg-[#050505]/95 px-3 pb-[max(12px,env(safe-area-inset-bottom))] pt-3 backdrop-blur-xl sm:px-6 sm:pb-4 sm:pt-4">
           <form onSubmit={submitMessage} className="mx-auto max-w-3xl rounded-[22px] border border-white/[.08] bg-[#111216] p-2 transition focus-within:border-blue-300/45 focus-within:ring-4 focus-within:ring-blue-500/[.08]">
-            <textarea ref={textareaRef} value={message} onChange={(event) => { setMessage(event.target.value); event.currentTarget.style.height = "auto"; event.currentTarget.style.height = `${Math.min(event.currentTarget.scrollHeight, 144)}px`; }} onKeyDown={onComposerKeyDown} rows={1} maxLength={12000} placeholder="Ask about your project…" disabled={!projectId || busy} className="max-h-36 min-h-11 w-full resize-none bg-transparent px-3 py-3 text-sm leading-5 text-slate-100 outline-none placeholder:text-zinc-600 disabled:opacity-50" />
+            <textarea ref={textareaRef} value={message} onChange={(event) => { setMessage(event.target.value); event.currentTarget.style.height = "auto"; event.currentTarget.style.height = `${Math.min(event.currentTarget.scrollHeight, 144)}px`; }} onKeyDown={onComposerKeyDown} rows={1} maxLength={12000} placeholder="Ask about your project…" disabled={busy} className="max-h-36 min-h-11 w-full resize-none bg-transparent px-3 py-3 text-sm leading-5 text-slate-100 outline-none placeholder:text-zinc-600 disabled:opacity-50" />
             <div className="flex items-center gap-2 px-1 pb-1">
               <label className="flex h-9 shrink-0 items-center gap-2 rounded-xl border border-white/[.07] bg-[#0d0d0f] pl-2.5 pr-1 text-[10px] font-medium text-zinc-500 transition focus-within:border-blue-300/45">
                 <Cpu className="size-3.5 text-blue-300" aria-hidden="true" />

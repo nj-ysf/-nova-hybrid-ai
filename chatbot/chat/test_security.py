@@ -608,6 +608,11 @@ class SecurityTests(TestCase):
         self.assertContains(response, 'id="project-select"')
         self.assertContains(response, "chat/chat.js")
 
+    def test_csrf_bootstrap_sets_cookie_for_frontend_writes(self):
+        response = self.client.get("/csrf/")
+        self.assertEqual(response.json(), {"ok": True})
+        self.assertIn("csrftoken", response.cookies)
+
     @override_settings(
         FRONTEND_URL="http://frontend.test:3000",
         LOGIN_REDIRECT_URL="http://frontend.test:3000",

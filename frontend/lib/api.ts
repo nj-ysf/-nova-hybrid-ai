@@ -40,6 +40,14 @@ function csrfToken() {
     ?.slice("csrftoken=".length) ?? "";
 }
 
+async function ensureCsrfToken() {
+  let token = csrfToken();
+  if (token) return token;
+  await fetch("/csrf/", { credentials: "same-origin" });
+  token = csrfToken();
+  return token;
+}
+
 function localApiUrl(url: string) {
   if (url.startsWith("/")) return url;
   const parsed = new URL(url);
@@ -47,12 +55,14 @@ function localApiUrl(url: string) {
 }
 
 export async function api<T>(url: string, init: RequestInit = {}): Promise<T> {
+  const method = init.method?.toUpperCase() ?? "GET";
+  const token = method === "GET" ? "" : await ensureCsrfToken();
   const response = await fetch(localApiUrl(url), {
     credentials: "same-origin",
     ...init,
     headers: {
       ...(init.body ? { "Content-Type": "application/json" } : {}),
-      ...(init.method && init.method !== "GET" ? { "X-CSRFToken": csrfToken() } : {}),
+      ...(method !== "GET" ? { "X-CSRFToken": token } : {}),
       ...init.headers,
     },
   });
