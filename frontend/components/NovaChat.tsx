@@ -299,7 +299,6 @@ export function NovaChat() {
                 <select value={mode} onChange={(event) => setMode(event.target.value as ProcessingMode)} disabled={busy} aria-label="Choose model routing" className="bg-transparent py-1.5 pr-1 text-[11px] font-semibold text-slate-300 outline-none disabled:opacity-50">
                   <option value="auto">Auto</option>
                   <option value="local">Local model</option>
-                  <option value="external">API model</option>
                 </select>
               </label>
               <p className="hidden min-w-0 flex-1 truncate text-[10px] text-zinc-600 sm:block">{status}</p>

@@ -139,6 +139,9 @@ npm run dev
 - Django API: <http://localhost:8000/api/>
 - Operator admin: <http://localhost:8000/admin/>
 
+Sign in through <http://localhost:3000/login/>. `FRONTEND_URL` sends successful
+Django logins to the modern Next.js interface instead of the legacy fallback template.
+
 ## Model configuration
 
 ### Local

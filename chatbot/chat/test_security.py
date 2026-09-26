@@ -608,6 +608,16 @@ class SecurityTests(TestCase):
         self.assertContains(response, 'id="project-select"')
         self.assertContains(response, "chat/chat.js")
 
+    @override_settings(
+        FRONTEND_URL="http://frontend.test:3000",
+        LOGIN_REDIRECT_URL="http://frontend.test:3000",
+    )
+    def test_login_and_backend_root_redirect_to_configured_frontend(self):
+        self.client.force_authenticate(None)
+        response = self.client.post("/login/", {"username": "alice", "password": "test-password"})
+        self.assertRedirects(response, "http://frontend.test:3000", fetch_redirect_response=False)
+        self.assertRedirects(self.client.get("/"), "http://frontend.test:3000", fetch_redirect_response=False)
+
     def test_local_embeddings_failure_leaves_no_partial_document(self):
         self.member.role = Role.EDITOR
         self.member.save()

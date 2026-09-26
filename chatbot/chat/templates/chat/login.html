@@ -4,25 +4,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign in · Nova</title>
+    <title>Sign in - Nova</title>
     <link rel="stylesheet" href="{% static 'chat/chat.css' %}">
 </head>
-<body>
-    <main class="chat-shell">
-        <section class="login-card">
-            <div class="avatar avatar-ai" aria-hidden="true">N</div>
-            <h1>Welcome to Nova</h1>
-            <p>Sign in to your project workspace.</p>
-            <form method="post" action="{% url 'login' %}">
-                {% csrf_token %}
-                {% if form.errors %}<p role="alert">Sign-in failed. Check your username and password.</p>{% endif %}
-                <label for="id_username">Username</label>
-                <input id="id_username" name="username" autocomplete="username" required autofocus>
-                <label for="id_password">Password</label>
-                <input id="id_password" name="password" type="password" autocomplete="current-password" required>
-                <input type="hidden" name="next" value="{{ next }}">
-                <button type="submit">Sign in</button>
-            </form>
+<body class="login-page">
+    <main class="login-shell">
+        <div class="login-wallpaper" aria-hidden="true">
+            <div class="login-wallpaper-grid">
+                <div class="login-mini-card"><div class="login-mini-hero"><span class="login-mini-mark">N</span><span class="login-mini-line login-mini-line-wide"></span><span class="login-mini-line login-mini-line-short"></span><span class="login-mini-pill"></span><span class="login-mini-block"></span></div><div class="login-mini-form"><span class="login-mini-line login-mini-line-medium"></span><span class="login-mini-title"></span><span class="login-mini-input"></span><span class="login-mini-input"></span><span class="login-mini-button"></span></div></div>
+                <div class="login-mini-card"><div class="login-mini-hero"><span class="login-mini-mark">N</span><span class="login-mini-line login-mini-line-wide"></span><span class="login-mini-line login-mini-line-short"></span><span class="login-mini-pill"></span><span class="login-mini-block"></span></div><div class="login-mini-form"><span class="login-mini-line login-mini-line-medium"></span><span class="login-mini-title"></span><span class="login-mini-input"></span><span class="login-mini-input"></span><span class="login-mini-button"></span></div></div>
+                <div class="login-mini-card"><div class="login-mini-hero"><span class="login-mini-mark">N</span><span class="login-mini-line login-mini-line-wide"></span><span class="login-mini-line login-mini-line-short"></span><span class="login-mini-pill"></span><span class="login-mini-block"></span></div><div class="login-mini-form"><span class="login-mini-line login-mini-line-medium"></span><span class="login-mini-title"></span><span class="login-mini-input"></span><span class="login-mini-input"></span><span class="login-mini-button"></span></div></div>
+                <div class="login-mini-card"><div class="login-mini-hero"><span class="login-mini-mark">N</span><span class="login-mini-line login-mini-line-wide"></span><span class="login-mini-line login-mini-line-short"></span><span class="login-mini-pill"></span><span class="login-mini-block"></span></div><div class="login-mini-form"><span class="login-mini-line login-mini-line-medium"></span><span class="login-mini-title"></span><span class="login-mini-input"></span><span class="login-mini-input"></span><span class="login-mini-button"></span></div></div>
+            </div>
+        </div>
+        <section class="login-stage" aria-label="Nova sign in">
+            <div class="login-hero">
+                <div class="login-brand"><span class="login-mark" aria-hidden="true">N</span><span>Nova</span></div>
+                <div class="login-hero-copy">
+                    <h1>Hello! Welcome to the Nova project workspace.</h1>
+                    <p>Ask questions, explore sources, and keep project knowledge in one focused place.</p>
+                </div>
+                <div class="login-hero-graphic" aria-hidden="true"><span class="login-graphic-ring"></span><span class="login-graphic-dot login-graphic-dot-one"></span><span class="login-graphic-dot login-graphic-dot-two"></span><strong>N</strong></div>
+            </div>
+            <div class="login-panel">
+                <div class="login-wordmark"><span class="login-mark" aria-hidden="true">N</span><span><b>Nova</b> workspace</span></div>
+                <div class="login-panel-head"><h2>Sign in</h2><p>Access your assigned project workspace.</p></div>
+                <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    {% if form.errors %}<p class="login-error" role="alert">Sign-in failed. Check your username and password.</p>{% endif %}
+                    <label for="id_username">Username</label>
+                    <span class="login-input-wrap"><span class="login-input-icon" aria-hidden="true">&#9675;</span><input id="id_username" name="username" autocomplete="username" placeholder="Enter your username" required autofocus></span>
+                    <label for="id_password">Password</label>
+                    <span class="login-input-wrap"><span class="login-input-icon" aria-hidden="true">&#9670;</span><input id="id_password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required></span>
+                    <input type="hidden" name="next" value="{{ next }}">
+                    <button type="submit">Sign in <span aria-hidden="true">&#8594;</span></button>
+                </form>
+                <p class="login-note">Your account must be assigned to a project by an operator.</p>
+            </div>
         </section>
     </main>
 </body>
